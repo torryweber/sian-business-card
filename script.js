@@ -73,7 +73,7 @@ const toast =
 
 
 /* =========================================
-   TOAST MESSAGE
+   TOAST
 ========================================= */
 
 function showToast(message) {
@@ -118,75 +118,54 @@ function showToast(message) {
 
 function createVCard() {
 
-    return [
+    /*
+     * IMPORTANT FOR iPHONE
+     *
+     * Apple Contacts does not always display
+     * FN correctly when N is completely empty.
+     *
+     * Therefore:
+     *
+     * Family Name = EMPTY
+     * Given Name  = Goh Chun Sian
+     *
+     * iPhone displays:
+     *
+     * Goh Chun Sian
+     *
+     * instead of:
+     *
+     * Chun Sian Goh
+     *
+     * There is NO family/last name.
+     */
+
+    const vcard = [
 
         "BEGIN:VCARD",
 
         "VERSION:3.0",
 
-        /*
-         * IMPORTANT
-         *
-         * Keep the complete name together.
-         *
-         * N format:
-         *
-         * Family Name;
-         * Given Name;
-         * Additional Name;
-         * Prefix;
-         * Suffix
-         *
-         * We intentionally put the complete
-         * name in the Family Name field so
-         * iPhone does not rearrange it.
-         */
-
-        "N:Goh Chun Sian;;;;",
-
-        /*
-         * FN controls the displayed name.
-         */
+        "N:;Goh Chun Sian;;;",
 
         "FN:Goh Chun Sian",
 
-        /*
-         * Company
-         */
-
         "ORG:Aik Huat Hardware",
-
-        /*
-         * Job Title
-         */
 
         "TITLE:Sales Manager",
 
-        /*
-         * Mobile
-         */
-
         "TEL;TYPE=CELL,VOICE:+60102907356",
-
-        /*
-         * Email
-         */
 
         "EMAIL;TYPE=INTERNET:gcs@aikhuathardware.com",
 
-        /*
-         * Website
-         */
-
         "URL:https://aikhuathardware.com/",
-
-        /*
-         * End VCard
-         */
 
         "END:VCARD"
 
     ].join("\r\n");
+
+
+    return vcard;
 
 }
 
@@ -201,6 +180,12 @@ function saveContact() {
 
         const vcard =
             createVCard();
+
+
+        console.log(
+            "VCF:",
+            vcard
+        );
 
 
         const blob =
@@ -233,6 +218,10 @@ function saveContact() {
             "Goh-Chun-Sian.vcf";
 
 
+        link.style.display =
+            "none";
+
+
         document.body.appendChild(
             link
         );
@@ -252,7 +241,7 @@ function saveContact() {
                 );
 
             },
-            1000
+            1500
         );
 
 
@@ -265,7 +254,7 @@ function saveContact() {
     catch (error) {
 
         console.error(
-            "Save contact error:",
+            "Save Contact Error:",
             error
         );
 
@@ -329,7 +318,7 @@ async function getShareImageFile() {
     catch (error) {
 
         console.error(
-            "Share image error:",
+            "Share Image Error:",
             error
         );
 
@@ -342,30 +331,21 @@ async function getShareImageFile() {
 
 
 /* =========================================
-   SHARE DIGITAL CARD
+   SHARE CARD
 ========================================= */
 
 async function shareCard() {
 
-
-    /*
-     * Share text
-     */
-
     const shareText =
         "Goh Chun Sian — Sales Manager\nAik Huat Hardware";
 
-
-    /*
-     * Load contact picture
-     */
 
     const imageFile =
         await getShareImageFile();
 
 
     /* =====================================
-       SHARE IMAGE + URL
+       SHARE IMAGE
     ====================================== */
 
     if (
@@ -377,8 +357,10 @@ async function shareCard() {
         navigator.canShare &&
 
         navigator.canShare({
+
             files:
                 [imageFile]
+
         })
 
     ) {
@@ -405,10 +387,6 @@ async function shareCard() {
 
         catch (error) {
 
-            /*
-             * User pressed Cancel
-             */
-
             if (
                 error.name ===
                 "AbortError"
@@ -418,8 +396,8 @@ async function shareCard() {
 
             }
 
-            console.error(
-                "Image share error:",
+            console.log(
+                "Image sharing failed:",
                 error
             );
 
@@ -429,7 +407,7 @@ async function shareCard() {
 
 
     /* =====================================
-       NORMAL WEB SHARE
+       NORMAL SHARE
     ====================================== */
 
     if (
@@ -473,7 +451,7 @@ async function shareCard() {
 
 
     /* =====================================
-       COPY URL FALLBACK
+       COPY URL
     ====================================== */
 
     try {
@@ -492,7 +470,7 @@ async function shareCard() {
     catch (error) {
 
         console.error(
-            "Copy error:",
+            "Copy Error:",
             error
         );
 
@@ -507,7 +485,7 @@ async function shareCard() {
 
 
 /* =========================================
-   SAVE CONTACT BUTTON
+   SAVE CONTACT EVENT
 ========================================= */
 
 if (
@@ -523,7 +501,7 @@ if (
 
 
 /* =========================================
-   SHARE BUTTON
+   SHARE EVENT
 ========================================= */
 
 if (
@@ -569,7 +547,7 @@ if (
                     error => {
 
                         console.log(
-                            "Service Worker registration failed:",
+                            "Service Worker error:",
                             error
                         );
 
