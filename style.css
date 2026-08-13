@@ -17,8 +17,11 @@
 
 html,
 body {
+
     width: 100%;
+
     min-height: 100%;
+
 }
 
 
@@ -34,11 +37,14 @@ body {
 
     color: #ffffff;
 
-    background: #07111f;
+    background:
+        #07111f;
 
-    -webkit-font-smoothing: antialiased;
+    -webkit-font-smoothing:
+        antialiased;
 
     overflow-x: hidden;
+
 }
 
 
@@ -73,19 +79,34 @@ body {
         #aab6c7;
 
     --glass:
-        rgba(13, 30, 52, 0.72);
+        rgba(
+            13,
+            30,
+            52,
+            0.72
+        );
 
     --glass-light:
-        rgba(255, 255, 255, 0.07);
+        rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
 
     --border:
-        rgba(255, 255, 255, 0.12);
+        rgba(
+            255,
+            255,
+            255,
+            0.12
+        );
 
 }
 
 
 /* =========================================
-   BACKGROUND
+   BASE BACKGROUND
 ========================================= */
 
 body::before {
@@ -96,19 +117,31 @@ body::before {
 
     inset: 0;
 
-    z-index: -5;
+    z-index: -10;
+
+    pointer-events: none;
 
     background:
 
         radial-gradient(
             circle at 15% 10%,
-            rgba(21, 87, 166, 0.42),
+            rgba(
+                21,
+                87,
+                166,
+                0.38
+            ),
             transparent 32%
         ),
 
         radial-gradient(
             circle at 90% 70%,
-            rgba(247, 223, 0, 0.12),
+            rgba(
+                247,
+                223,
+                0,
+                0.08
+            ),
             transparent 28%
         ),
 
@@ -121,6 +154,10 @@ body::before {
 }
 
 
+/* =========================================
+   BACKGROUND GLOW
+========================================= */
+
 .background-glow {
 
     position: fixed;
@@ -129,37 +166,382 @@ body::before {
 
     pointer-events: none;
 
-    filter: blur(90px);
+    filter:
+        blur(100px);
 
-    z-index: -2;
+    z-index: -8;
 
 }
 
 
 .glow-blue {
 
-    width: 300px;
-    height: 300px;
+    width:
+        330px;
 
-    top: -100px;
-    right: -80px;
+    height:
+        330px;
+
+    top:
+        -120px;
+
+    right:
+        -100px;
 
     background:
-        rgba(21, 87, 166, 0.30);
+        rgba(
+            21,
+            87,
+            166,
+            0.24
+        );
 
 }
 
 
 .glow-yellow {
 
-    width: 220px;
-    height: 220px;
+    width:
+        240px;
 
-    bottom: -90px;
-    left: -70px;
+    height:
+        240px;
+
+    bottom:
+        -110px;
+
+    left:
+        -90px;
 
     background:
-        rgba(247, 223, 0, 0.10);
+        rgba(
+            247,
+            223,
+            0,
+            0.08
+        );
+
+}
+
+
+/* =========================================
+   ANIMATED WAVES
+========================================= */
+
+.wave {
+
+    position: fixed;
+
+    pointer-events: none;
+
+    z-index: -2;
+
+    border-radius: 50%;
+
+    transform-origin: center;
+
+    will-change:
+        transform;
+
+}
+
+
+/* =========================================
+   MAIN BLUE WAVE
+========================================= */
+
+.wave-blue {
+
+    width:
+        720px;
+
+    height:
+        920px;
+
+    top:
+        8%;
+
+    right:
+        -610px;
+
+    border:
+        2px solid
+        rgba(
+            40,
+            119,
+            209,
+            0.20
+        );
+
+    box-shadow:
+
+        0 0 45px
+        rgba(
+            40,
+            119,
+            209,
+            0.08
+        ),
+
+        inset
+        0 0 45px
+        rgba(
+            40,
+            119,
+            209,
+            0.05
+        );
+
+    animation:
+        blueWave
+        13s
+        ease-in-out
+        infinite;
+
+}
+
+
+/* =========================================
+   SOFT BLUE WAVE
+========================================= */
+
+.wave-blue-soft {
+
+    width:
+        820px;
+
+    height:
+        1040px;
+
+    top:
+        -2%;
+
+    right:
+        -710px;
+
+    border:
+        1px solid
+        rgba(
+            90,
+            155,
+            225,
+            0.13
+        );
+
+    box-shadow:
+
+        0 0 70px
+        rgba(
+            40,
+            119,
+            209,
+            0.05
+        );
+
+    animation:
+        softWave
+        18s
+        ease-in-out
+        infinite;
+
+}
+
+
+/* =========================================
+   YELLOW ACCENT WAVE
+========================================= */
+
+.wave-yellow {
+
+    width:
+        650px;
+
+    height:
+        820px;
+
+    top:
+        22%;
+
+    right:
+        -585px;
+
+    border:
+        2px solid
+        rgba(
+            247,
+            223,
+            0,
+            0.10
+        );
+
+    box-shadow:
+
+        0 0 50px
+        rgba(
+            247,
+            223,
+            0,
+            0.035
+        );
+
+    animation:
+        yellowWave
+        16s
+        ease-in-out
+        infinite;
+
+}
+
+
+/* =========================================
+   BLUE WAVE ANIMATION
+========================================= */
+
+@keyframes blueWave {
+
+    0% {
+
+        transform:
+            translate(
+                0,
+                0
+            )
+            rotate(
+                -4deg
+            )
+            scale(
+                1
+            );
+
+    }
+
+    50% {
+
+        transform:
+            translate(
+                -45px,
+                18px
+            )
+            rotate(
+                4deg
+            )
+            scale(
+                1.04
+            );
+
+    }
+
+    100% {
+
+        transform:
+            translate(
+                0,
+                0
+            )
+            rotate(
+                -4deg
+            )
+            scale(
+                1
+            );
+
+    }
+
+}
+
+
+/* =========================================
+   SOFT WAVE ANIMATION
+========================================= */
+
+@keyframes softWave {
+
+    0% {
+
+        transform:
+            translate(
+                20px,
+                -10px
+            )
+            rotate(
+                5deg
+            );
+
+    }
+
+    50% {
+
+        transform:
+            translate(
+                -35px,
+                25px
+            )
+            rotate(
+                -4deg
+            );
+
+    }
+
+    100% {
+
+        transform:
+            translate(
+                20px,
+                -10px
+            )
+            rotate(
+                5deg
+            );
+
+    }
+
+}
+
+
+/* =========================================
+   YELLOW WAVE ANIMATION
+========================================= */
+
+@keyframes yellowWave {
+
+    0% {
+
+        transform:
+            translate(
+                0,
+                0
+            )
+            rotate(
+                3deg
+            );
+
+    }
+
+    50% {
+
+        transform:
+            translate(
+                -30px,
+                -20px
+            )
+            rotate(
+                -4deg
+            );
+
+    }
+
+    100% {
+
+        transform:
+            translate(
+                0,
+                0
+            )
+            rotate(
+                3deg
+            );
+
+    }
 
 }
 
@@ -170,17 +552,29 @@ body::before {
 
 .page {
 
-    width: 100%;
+    position:
+        relative;
 
-    min-height: 100svh;
+    z-index:
+        1;
 
-    display: flex;
+    width:
+        100%;
 
-    justify-content: center;
+    min-height:
+        100svh;
 
-    align-items: center;
+    display:
+        flex;
 
-    padding: 16px;
+    justify-content:
+        center;
+
+    align-items:
+        center;
+
+    padding:
+        16px;
 
 }
 
@@ -191,32 +585,64 @@ body::before {
 
 .card {
 
-    width: min(
-        100%,
-        460px
-    );
+    position:
+        relative;
 
-    padding: 20px;
+    z-index:
+        2;
 
-    border-radius: 34px;
+    width:
+        min(
+            100%,
+            460px
+        );
+
+    padding:
+        20px;
+
+    border-radius:
+        34px;
 
     background:
+
         linear-gradient(
             145deg,
-            rgba(20, 42, 70, 0.82),
-            rgba(4, 12, 23, 0.78)
+            rgba(
+                20,
+                42,
+                70,
+                0.84
+            ),
+            rgba(
+                4,
+                12,
+                23,
+                0.82
+            )
         );
 
     border:
-        1px solid var(--border);
+        1px solid
+        var(--border);
 
     box-shadow:
 
         0 30px 100px
-        rgba(0, 0, 0, 0.60),
+        rgba(
+            0,
+            0,
+            0,
+            0.60
+        ),
 
-        inset 0 1px
-        rgba(255,255,255,0.08);
+        inset
+        0 1px
+        rgba(
+            255,
+            255,
+            255,
+            0.08
+        );
 
     backdrop-filter:
         blur(28px);
@@ -233,71 +659,98 @@ body::before {
 
 .topbar {
 
-    display: flex;
+    display:
+        flex;
 
-    align-items: center;
+    align-items:
+        center;
 
-    justify-content: space-between;
+    justify-content:
+        space-between;
 
-    gap: 12px;
+    gap:
+        12px;
 
 }
 
 
 .logo-container {
 
-    display: flex;
+    display:
+        flex;
 
-    align-items: center;
+    align-items:
+        center;
 
 }
 
 
 .logo {
 
-    width: 150px;
+    width:
+        150px;
 
-    height: 62px;
+    height:
+        62px;
 
-    object-fit: contain;
+    object-fit:
+        contain;
 
-    object-position: left center;
+    object-position:
+        left center;
 
 }
 
 
 /* =========================================
-   SHARE
+   SHARE BUTTON
 ========================================= */
 
 .share-button {
 
-    display: flex;
+    display:
+        flex;
 
-    align-items: center;
+    align-items:
+        center;
 
-    gap: 6px;
+    gap:
+        6px;
 
     padding:
-        10px
-        13px;
+        10px 13px;
 
-    border-radius: 14px;
+    border-radius:
+        14px;
 
     border:
         1px solid
-        rgba(255,255,255,0.14);
+        rgba(
+            255,
+            255,
+            255,
+            0.14
+        );
 
     background:
-        rgba(255,255,255,0.06);
+        rgba(
+            255,
+            255,
+            255,
+            0.06
+        );
 
-    color: #ffffff;
+    color:
+        #ffffff;
 
-    font-size: 12px;
+    font-size:
+        12px;
 
-    font-weight: 700;
+    font-weight:
+        700;
 
-    cursor: pointer;
+    cursor:
+        pointer;
 
     transition:
         0.2s ease;
@@ -308,19 +761,28 @@ body::before {
 .share-button:hover {
 
     background:
-        rgba(255,255,255,0.11);
+        rgba(
+            255,
+            255,
+            255,
+            0.11
+        );
 
     transform:
-        translateY(-1px);
+        translateY(
+            -1px
+        );
 
 }
 
 
 .share-icon {
 
-    font-size: 20px;
+    font-size:
+        20px;
 
-    line-height: 1;
+    line-height:
+        1;
 
 }
 
@@ -331,30 +793,31 @@ body::before {
 
 .profile {
 
-    text-align: center;
+    text-align:
+        center;
 
     padding:
-        8px
-        0
-        23px;
+        8px 0 23px;
 
 }
 
 
 .profile-ring {
 
-    width: 150px;
+    width:
+        150px;
 
-    height: 150px;
+    height:
+        150px;
 
     margin:
-        0
-        auto
-        16px;
+        0 auto 16px;
 
-    padding: 3px;
+    padding:
+        3px;
 
-    border-radius: 50%;
+    border-radius:
+        50%;
 
     background:
 
@@ -368,22 +831,32 @@ body::before {
     box-shadow:
 
         0 0 45px
-        rgba(21,87,166,0.35);
+        rgba(
+            21,
+            87,
+            166,
+            0.35
+        );
 
 }
 
 
 .profile-photo {
 
-    width: 100%;
+    width:
+        100%;
 
-    height: 100%;
+    height:
+        100%;
 
-    display: block;
+    display:
+        block;
 
-    object-fit: cover;
+    object-fit:
+        cover;
 
-    border-radius: 50%;
+    border-radius:
+        50%;
 
 }
 
@@ -393,14 +866,17 @@ body::before {
     color:
         var(--yellow);
 
-    font-size: 10px;
+    font-size:
+        10px;
 
-    font-weight: 800;
+    font-weight:
+        800;
 
     letter-spacing:
         0.20em;
 
-    margin-bottom: 7px;
+    margin-bottom:
+        7px;
 
 }
 
@@ -414,7 +890,8 @@ h1 {
             39px
         );
 
-    line-height: 1.05;
+    line-height:
+        1.05;
 
     letter-spacing:
         -0.04em;
@@ -424,12 +901,14 @@ h1 {
 
 .job-title {
 
-    margin-top: 8px;
+    margin-top:
+        8px;
 
     color:
         var(--muted);
 
-    font-size: 15px;
+    font-size:
+        15px;
 
 }
 
@@ -440,21 +919,29 @@ h1 {
 
 .save-contact-button {
 
-    width: 100%;
+    width:
+        100%;
 
-    min-height: 61px;
+    min-height:
+        61px;
 
-    display: flex;
+    display:
+        flex;
 
-    align-items: center;
+    align-items:
+        center;
 
-    justify-content: center;
+    justify-content:
+        center;
 
-    gap: 9px;
+    gap:
+        9px;
 
-    border: 0;
+    border:
+        0;
 
-    border-radius: 19px;
+    border-radius:
+        19px;
 
     background:
 
@@ -464,20 +951,30 @@ h1 {
             var(--blue)
         );
 
-    color: #ffffff;
+    color:
+        #ffffff;
 
-    font-family: inherit;
+    font-family:
+        inherit;
 
-    font-size: 15px;
+    font-size:
+        15px;
 
-    font-weight: 750;
+    font-weight:
+        750;
 
-    cursor: pointer;
+    cursor:
+        pointer;
 
     box-shadow:
 
         0 12px 30px
-        rgba(21,87,166,0.25);
+        rgba(
+            21,
+            87,
+            166,
+            0.25
+        );
 
     transition:
         0.2s ease;
@@ -488,19 +985,27 @@ h1 {
 .save-contact-button:hover {
 
     transform:
-        translateY(-1px);
+        translateY(
+            -1px
+        );
 
     box-shadow:
 
         0 15px 35px
-        rgba(21,87,166,0.35);
+        rgba(
+            21,
+            87,
+            166,
+            0.35
+        );
 
 }
 
 
 .button-icon {
 
-    font-size: 21px;
+    font-size:
+        21px;
 
 }
 
@@ -511,48 +1016,65 @@ h1 {
 
 .contact-row {
 
-    display: grid;
+    display:
+        grid;
 
     grid-template-columns:
-        repeat(3, 1fr);
+        repeat(
+            3,
+            1fr
+        );
 
-    gap: 9px;
+    gap:
+        9px;
 
-    margin-top: 10px;
+    margin-top:
+        10px;
 
 }
 
 
 .contact-button {
 
-    min-height: 61px;
+    min-height:
+        61px;
 
-    display: flex;
+    display:
+        flex;
 
-    flex-direction: column;
+    flex-direction:
+        column;
 
-    align-items: center;
+    align-items:
+        center;
 
-    justify-content: center;
+    justify-content:
+        center;
 
-    gap: 5px;
+    gap:
+        5px;
 
-    text-decoration: none;
+    text-decoration:
+        none;
 
-    color: #ffffff;
+    color:
+        #ffffff;
 
     border:
         1px solid
         var(--border);
 
-    border-radius: 18px;
+    border-radius:
+        18px;
 
     background:
         var(--glass-light);
 
-    font-size: 12px;
+    font-size:
+        12px;
 
-    font-weight: 700;
+    font-weight:
+        700;
 
     transition:
         0.2s ease;
@@ -563,17 +1085,25 @@ h1 {
 .contact-button:hover {
 
     transform:
-        translateY(-1px);
+        translateY(
+            -1px
+        );
 
     background:
-        rgba(255,255,255,0.10);
+        rgba(
+            255,
+            255,
+            255,
+            0.10
+        );
 
 }
 
 
 .contact-icon {
 
-    font-size: 19px;
+    font-size:
+        19px;
 
 }
 
@@ -581,10 +1111,20 @@ h1 {
 .contact-button.whatsapp {
 
     background:
-        rgba(21, 150, 78, 0.22);
+        rgba(
+            21,
+            150,
+            78,
+            0.22
+        );
 
     border-color:
-        rgba(55, 200, 115, 0.20);
+        rgba(
+            55,
+            200,
+            115,
+            0.20
+        );
 
 }
 
@@ -595,7 +1135,8 @@ h1 {
 
 .locations {
 
-    margin-top: 23px;
+    margin-top:
+        23px;
 
 }
 
@@ -603,18 +1144,19 @@ h1 {
 .section-title {
 
     margin:
-        0
-        2px
-        9px;
+        0 2px 9px;
 
     color:
         #8291a5;
 
-    font-size: 10px;
+    font-size:
+        10px;
 
-    font-weight: 800;
+    font-weight:
+        800;
 
-    text-transform: uppercase;
+    text-transform:
+        uppercase;
 
     letter-spacing:
         0.18em;
@@ -624,31 +1166,44 @@ h1 {
 
 .map-button {
 
-    display: flex;
+    display:
+        flex;
 
-    align-items: center;
+    align-items:
+        center;
 
-    gap: 12px;
+    gap:
+        12px;
 
-    width: 100%;
+    width:
+        100%;
 
     padding:
         13px;
 
-    margin-bottom: 9px;
+    margin-bottom:
+        9px;
 
-    text-decoration: none;
+    text-decoration:
+        none;
 
-    color: #ffffff;
+    color:
+        #ffffff;
 
     border:
         1px solid
         var(--border);
 
-    border-radius: 18px;
+    border-radius:
+        18px;
 
     background:
-        rgba(255,255,255,0.045);
+        rgba(
+            255,
+            255,
+            255,
+            0.045
+        );
 
     transition:
         0.2s ease;
@@ -659,55 +1214,79 @@ h1 {
 .map-button:hover {
 
     background:
-        rgba(255,255,255,0.08);
+        rgba(
+            255,
+            255,
+            255,
+            0.08
+        );
 
     transform:
-        translateY(-1px);
+        translateY(
+            -1px
+        );
 
 }
 
 
 .map-icon {
 
-    width: 39px;
+    width:
+        39px;
 
-    height: 39px;
+    height:
+        39px;
 
-    flex-shrink: 0;
+    flex-shrink:
+        0;
 
-    display: grid;
+    display:
+        grid;
 
-    place-items: center;
+    place-items:
+        center;
 
-    border-radius: 12px;
+    border-radius:
+        12px;
 
     background:
-        rgba(21,87,166,0.22);
+        rgba(
+            21,
+            87,
+            166,
+            0.22
+        );
 
     color:
         var(--yellow);
 
-    font-size: 21px;
+    font-size:
+        21px;
 
 }
 
 
 .map-text {
 
-    min-width: 0;
+    min-width:
+        0;
 
-    display: flex;
+    display:
+        flex;
 
-    flex-direction: column;
+    flex-direction:
+        column;
 
-    gap: 3px;
+    gap:
+        3px;
 
 }
 
 
 .map-text strong {
 
-    font-size: 14px;
+    font-size:
+        14px;
 
 }
 
@@ -717,19 +1296,22 @@ h1 {
     color:
         var(--muted);
 
-    font-size: 11px;
+    font-size:
+        11px;
 
 }
 
 
 .map-arrow {
 
-    margin-left: auto;
+    margin-left:
+        auto;
 
     color:
         #8390a1;
 
-    font-size: 25px;
+    font-size:
+        25px;
 
 }
 
@@ -740,44 +1322,68 @@ h1 {
 
 .website-button {
 
-    width: 100%;
+    width:
+        100%;
 
-    min-height: 58px;
+    min-height:
+        58px;
 
-    display: flex;
+    display:
+        flex;
 
-    align-items: center;
+    align-items:
+        center;
 
-    gap: 11px;
+    gap:
+        11px;
 
-    margin-top: 5px;
+    margin-top:
+        5px;
 
     padding:
-        0
-        15px;
+        0 15px;
 
     border:
         1px solid
-        rgba(247,223,0,0.20);
+        rgba(
+            247,
+            223,
+            0,
+            0.20
+        );
 
-    border-radius: 18px;
+    border-radius:
+        18px;
 
     background:
 
         linear-gradient(
             135deg,
-            rgba(247,223,0,0.11),
-            rgba(21,87,166,0.12)
+            rgba(
+                247,
+                223,
+                0,
+                0.11
+            ),
+            rgba(
+                21,
+                87,
+                166,
+                0.12
+            )
         );
 
     color:
         #ffffff;
 
-    text-decoration: none;
+    text-decoration:
+        none;
 
-    font-size: 13px;
+    font-size:
+        13px;
 
-    font-weight: 750;
+    font-weight:
+        750;
 
 }
 
@@ -787,19 +1393,22 @@ h1 {
     color:
         var(--yellow);
 
-    font-size: 19px;
+    font-size:
+        19px;
 
 }
 
 
 .website-arrow {
 
-    margin-left: auto;
+    margin-left:
+        auto;
 
     color:
         var(--yellow);
 
-    font-size: 23px;
+    font-size:
+        23px;
 
 }
 
@@ -810,9 +1419,11 @@ h1 {
 
 footer {
 
-    text-align: center;
+    text-align:
+        center;
 
-    padding-top: 17px;
+    padding-top:
+        17px;
 
 }
 
@@ -822,7 +1433,8 @@ footer p {
     color:
         #657386;
 
-    font-size: 10px;
+    font-size:
+        10px;
 
 }
 
@@ -833,11 +1445,14 @@ footer p {
 
 .toast {
 
-    position: fixed;
+    position:
+        fixed;
 
-    left: 50%;
+    left:
+        50%;
 
-    bottom: 25px;
+    bottom:
+        25px;
 
     transform:
         translate(
@@ -845,41 +1460,59 @@ footer p {
             20px
         );
 
-    opacity: 0;
+    opacity:
+        0;
 
-    pointer-events: none;
+    pointer-events:
+        none;
 
     padding:
-        11px
-        16px;
+        11px 16px;
 
     border:
         1px solid
-        rgba(255,255,255,0.12);
+        rgba(
+            255,
+            255,
+            255,
+            0.12
+        );
 
-    border-radius: 14px;
+    border-radius:
+        14px;
 
     background:
-        rgba(5,12,22,0.94);
+        rgba(
+            5,
+            12,
+            22,
+            0.94
+        );
 
-    color: #ffffff;
+    color:
+        #ffffff;
 
-    font-size: 12px;
+    font-size:
+        12px;
 
     backdrop-filter:
-        blur(15px);
+        blur(
+            15px
+        );
 
     transition:
         0.25s ease;
 
-    z-index: 20;
+    z-index:
+        20;
 
 }
 
 
 .toast.show {
 
-    opacity: 1;
+    opacity:
+        1;
 
     transform:
         translate(
@@ -891,7 +1524,7 @@ footer p {
 
 
 /* =========================================
-   MOBILE HEIGHT FIX
+   SMALL SCREEN
 ========================================= */
 
 @media (
@@ -901,72 +1534,145 @@ footer p {
     .page {
 
         padding:
-            8px
-            12px;
+            8px 12px;
 
     }
 
 
     .card {
 
-        padding: 16px;
+        padding:
+            16px;
 
-        border-radius: 27px;
+        border-radius:
+            27px;
 
     }
 
 
     .profile {
 
-        padding-bottom: 15px;
+        padding-bottom:
+            15px;
 
     }
 
 
     .profile-ring {
 
-        width: 115px;
+        width:
+            115px;
 
-        height: 115px;
+        height:
+            115px;
 
-        margin-bottom: 11px;
+        margin-bottom:
+            11px;
 
     }
 
 
     h1 {
 
-        font-size: 29px;
+        font-size:
+            29px;
 
     }
 
 
     .save-contact-button {
 
-        min-height: 53px;
+        min-height:
+            53px;
 
     }
 
 
     .contact-button {
 
-        min-height: 53px;
+        min-height:
+            53px;
 
     }
 
 
     .map-button {
 
-        padding: 10px;
+        padding:
+            10px;
 
     }
 
 
     .map-icon {
 
-        width: 34px;
+        width:
+            34px;
 
-        height: 34px;
+        height:
+            34px;
+
+    }
+
+
+    /* Smaller waves on short screens */
+
+    .wave-blue {
+
+        width:
+            600px;
+
+        height:
+            780px;
+
+        right:
+            -520px;
+
+    }
+
+
+    .wave-blue-soft {
+
+        width:
+            680px;
+
+        height:
+            880px;
+
+        right:
+            -590px;
+
+    }
+
+
+    .wave-yellow {
+
+        width:
+            550px;
+
+        height:
+            700px;
+
+        right:
+            -490px;
+
+    }
+
+}
+
+
+/* =========================================
+   REDUCE MOTION
+========================================= */
+
+@media (
+    prefers-reduced-motion: reduce
+) {
+
+    .wave {
+
+        animation:
+            none;
 
     }
 
