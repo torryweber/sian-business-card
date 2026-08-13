@@ -1,11 +1,7 @@
 /* =========================================
-   SIAN DIGITAL BUSINESS CARD
-   SCRIPT
-========================================= */
-
-
-/* =========================================
-   CARD URL
+   AIK HUAT HARDWARE
+   GOH CHUN SIAN
+   DIGITAL BUSINESS CARD
 ========================================= */
 
 const CARD_URL =
@@ -18,29 +14,21 @@ const CARD_URL =
 
 const contact = {
 
-    name:
-        "Goh Chun Sian",
+    name: "Goh Chun Sian",
 
-    company:
-        "Aik Huat Hardware",
+    company: "Aik Huat Hardware",
 
-    title:
-        "Sales Manager",
+    title: "Sales Manager",
 
-    mobile:
-        "+60102907356",
+    mobile: "+60102907356",
 
-    whatsapp:
-        "+60102907356",
+    whatsapp: "+60102907356",
 
-    email:
-        "gcs@aikhuathardware.com",
+    email: "gcs@aikhuathardware.com",
 
-    website:
-        "https://aikhuathardware.com/",
+    website: "https://aikhuathardware.com/",
 
-    photo:
-        "sian-profile.png"
+    photo: "sian-profile.png"
 
 };
 
@@ -50,21 +38,13 @@ const contact = {
 ========================================= */
 
 const saveContactButton =
-    document.getElementById(
-        "saveContactButton"
-    );
-
+    document.getElementById("saveContactButton");
 
 const shareButton =
-    document.getElementById(
-        "shareButton"
-    );
-
+    document.getElementById("shareButton");
 
 const toast =
-    document.getElementById(
-        "toast"
-    );
+    document.getElementById("toast");
 
 
 /* =========================================
@@ -75,26 +55,17 @@ function showToast(message) {
 
     if (!toast) return;
 
-    toast.textContent =
-        message;
+    toast.textContent = message;
 
-    toast.classList.add(
-        "show"
-    );
+    toast.classList.add("show");
 
-    clearTimeout(
-        window.toastTimer
-    );
+    clearTimeout(window.toastTimer);
 
-    window.toastTimer =
-        setTimeout(() => {
+    window.toastTimer = setTimeout(() => {
 
-            toast.classList.remove(
-                "show"
-            );
+        toast.classList.remove("show");
 
-        }, 2200);
-
+    }, 2200);
 }
 
 
@@ -127,34 +98,22 @@ function arrayBufferToBase64(buffer) {
             );
 
         binary +=
-            String.fromCharCode(
-                ...chunk
-            );
-
+            String.fromCharCode(...chunk);
     }
 
     return btoa(binary);
-
 }
 
 
 /* =========================================
-   FOLD VCF PHOTO DATA
+   FOLD PHOTO DATA
 ========================================= */
 
 function foldBase64(base64) {
 
-    /*
-       vCard allows long lines to be
-       folded.
-
-       Each continuation line starts
-       with one space.
-    */
-
     const lineLength = 72;
 
-    const lines = [];
+    const result = [];
 
     for (
         let i = 0;
@@ -162,23 +121,24 @@ function foldBase64(base64) {
         i += lineLength
     ) {
 
-        lines.push(
-            i === 0
-                ? base64.substring(
-                    i,
-                    i + lineLength
-                )
-                : " " +
-                  base64.substring(
-                    i,
-                    i + lineLength
-                  )
-        );
+        const part =
+            base64.substring(
+                i,
+                i + lineLength
+            );
 
+        if (i === 0) {
+
+            result.push(part);
+
+        } else {
+
+            result.push(" " + part);
+
+        }
     }
 
-    return lines.join("\r\n");
-
+    return result.join("\r\n");
 }
 
 
@@ -194,40 +154,29 @@ async function getProfilePhoto() {
             await fetch(
                 contact.photo,
                 {
-                    cache:
-                        "no-cache"
+                    cache: "no-store"
                 }
             );
-
 
         if (!response.ok) {
 
             throw new Error(
-                "Unable to load profile photo"
+                "Profile photo could not be loaded"
             );
-
         }
-
 
         const contentType =
             response.headers.get(
                 "content-type"
             ) || "image/png";
 
-
         const buffer =
             await response.arrayBuffer();
 
-
         const base64 =
-            arrayBufferToBase64(
-                buffer
-            );
+            arrayBufferToBase64(buffer);
 
-
-        let imageType =
-            "PNG";
-
+        let imageType = "PNG";
 
         if (
             contentType
@@ -238,20 +187,12 @@ async function getProfilePhoto() {
                 .includes("jpg")
         ) {
 
-            imageType =
-                "JPEG";
-
+            imageType = "JPEG";
         }
 
-
         return {
-
-            type:
-                imageType,
-
-            base64:
-                base64
-
+            type: imageType,
+            base64: base64
         };
 
     } catch (error) {
@@ -262,9 +203,7 @@ async function getProfilePhoto() {
         );
 
         return null;
-
     }
-
 }
 
 
@@ -274,15 +213,27 @@ async function getProfilePhoto() {
 
 async function createVCard() {
 
-    /*
-       Load Sian's profile picture
-       and embed it directly into
-       the contact file.
-    */
-
     const photo =
         await getProfilePhoto();
 
+
+    /*
+       IMPORTANT FOR iPHONE
+
+       vCard N format:
+
+       N:Family;Given;Additional;Prefix;Suffix
+
+       We use:
+
+       Family = Goh
+       Given  = Chun Sian
+
+       FN remains the complete display name.
+
+       This makes Apple Contacts reliably
+       recognise the contact name.
+    */
 
     const lines = [
 
@@ -290,58 +241,52 @@ async function createVCard() {
 
         "VERSION:3.0",
 
-        /*
-           IMPORTANT:
-
-           FN is the complete name.
-
-           This prevents iPhone from
-           displaying:
-
-           Chun Sian Goh
-
-           or splitting first/last name.
-        */
+        "PRODID:-//Aik Huat Hardware//Digital Card//EN",
 
         "FN:Goh Chun Sian",
+
+        "N:Goh;Chun Sian;;;",
 
         "ORG:Aik Huat Hardware",
 
         "TITLE:Sales Manager",
 
-        "TEL;TYPE=CELL:+60102907356",
-
-        "TEL;TYPE=WORK,VOICE:+60102907356",
+        "TEL;TYPE=CELL,VOICE:+60102907356",
 
         "EMAIL;TYPE=WORK:gcs@aikhuathardware.com",
 
-        "URL:https://aikhuathardware.com/"
+        "URL:https://aikhuathardware.com/",
+
+        "REV:" + new Date().toISOString(),
+
+        "END:VCARD"
 
     ];
 
 
     /* =====================================
-       ADD PROFILE PHOTO
+       EMBED PROFILE PHOTO
     ====================================== */
 
     if (photo) {
 
-        lines.push(
+        /*
+           Insert PHOTO before END:VCARD.
+        */
+
+        lines.splice(
+            lines.length - 1,
+            0,
             `PHOTO;ENCODING=b;TYPE=${photo.type}:${foldBase64(photo.base64)}`
         );
-
     }
 
 
-    lines.push(
-        "END:VCARD"
-    );
+    /*
+       CRLF is important for vCard/iOS.
+    */
 
-
-    return lines.join(
-        "\r\n"
-    );
-
+    return lines.join("\r\n");
 }
 
 
@@ -353,24 +298,18 @@ async function saveContact() {
 
     try {
 
-        /*
-           Let user know we're preparing
-           the contact.
-        */
-
         showToast(
             "Preparing contact..."
         );
 
 
-        /*
-           Create VCF with embedded
-           profile picture.
-        */
-
         const vcf =
             await createVCard();
 
+
+        /*
+           UTF-8 vCard file
+        */
 
         const blob =
             new Blob(
@@ -383,47 +322,40 @@ async function saveContact() {
 
 
         const url =
-            URL.createObjectURL(
-                blob
-            );
+            URL.createObjectURL(blob);
 
 
         const link =
-            document.createElement(
-                "a"
-            );
+            document.createElement("a");
 
 
-        link.href =
-            url;
-
+        link.href = url;
 
         link.download =
             "Goh-Chun-Sian.vcf";
 
 
-        document.body.appendChild(
-            link
-        );
+        link.style.display = "none";
+
+
+        document.body.appendChild(link);
 
 
         link.click();
 
 
-        link.remove();
+        document.body.removeChild(link);
 
 
         setTimeout(() => {
 
-            URL.revokeObjectURL(
-                url
-            );
+            URL.revokeObjectURL(url);
 
-        }, 1000);
+        }, 2000);
 
 
         showToast(
-            "Contact card ready"
+            "Goh Chun Sian contact ready"
         );
 
 
@@ -434,13 +366,10 @@ async function saveContact() {
             error
         );
 
-
         showToast(
             "Unable to create contact"
         );
-
     }
-
 }
 
 
@@ -454,7 +383,6 @@ if (saveContactButton) {
         "click",
         saveContact
     );
-
 }
 
 
@@ -477,7 +405,6 @@ async function shareCard() {
 
         url:
             CARD_URL
-
     };
 
 
@@ -497,16 +424,12 @@ async function shareCard() {
 
             if (
                 error &&
-                error.name ===
-                    "AbortError"
+                error.name === "AbortError"
             ) {
 
                 return;
-
             }
-
         }
-
     }
 
 
@@ -529,9 +452,7 @@ async function shareCard() {
         showToast(
             CARD_URL
         );
-
     }
-
 }
 
 
@@ -545,7 +466,6 @@ if (shareButton) {
         "click",
         shareCard
     );
-
 }
 
 
@@ -554,8 +474,7 @@ if (shareButton) {
 ========================================= */
 
 if (
-    "serviceWorker"
-    in navigator
+    "serviceWorker" in navigator
 ) {
 
     window.addEventListener(
@@ -563,21 +482,16 @@ if (
         () => {
 
             navigator.serviceWorker
-                .register(
-                    "./sw.js"
-                )
-                .catch(
-                    error => {
+                .register("./sw.js")
+                .catch(error => {
 
-                        console.log(
-                            "Service worker registration failed:",
-                            error
-                        );
+                    console.log(
+                        "Service worker error:",
+                        error
+                    );
 
-                    }
-                );
+                });
 
         }
     );
-
 }
