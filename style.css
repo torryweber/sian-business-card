@@ -56,17 +56,12 @@ body {
 
     --yellow: #f7df00;
 
-    --yellow-light: #fff45c;
-
     --white: #ffffff;
 
     --muted: #aab6c7;
 
-    --glass: rgba(13, 30, 52, 0.72);
-
-    --glass-light: rgba(255, 255, 255, 0.07);
-
-    --border: rgba(255, 255, 255, 0.12);
+    --border:
+        rgba(255, 255, 255, 0.12);
 
 }
 
@@ -110,7 +105,7 @@ body::before {
 
 
 /* =========================================
-   BACKGROUND GLOW
+   GLOW
 ========================================= */
 
 .background-glow {
@@ -222,11 +217,6 @@ body::before {
         1px solid
         rgba(90, 155, 225, 0.13);
 
-    box-shadow:
-
-        0 0 70px
-        rgba(40, 119, 209, 0.05);
-
     animation:
         softWave
         18s
@@ -249,11 +239,6 @@ body::before {
         2px solid
         rgba(247, 223, 0, 0.10);
 
-    box-shadow:
-
-        0 0 50px
-        rgba(247, 223, 0, 0.035);
-
     animation:
         yellowWave
         16s
@@ -269,7 +254,6 @@ body::before {
 @keyframes blueWave {
 
     0% {
-
         transform:
             translate(0, 0)
             rotate(-4deg)
@@ -277,7 +261,6 @@ body::before {
     }
 
     50% {
-
         transform:
             translate(-45px, 18px)
             rotate(4deg)
@@ -285,7 +268,6 @@ body::before {
     }
 
     100% {
-
         transform:
             translate(0, 0)
             rotate(-4deg)
@@ -297,21 +279,18 @@ body::before {
 @keyframes softWave {
 
     0% {
-
         transform:
             translate(20px, -10px)
             rotate(5deg);
     }
 
     50% {
-
         transform:
             translate(-35px, 25px)
             rotate(-4deg);
     }
 
     100% {
-
         transform:
             translate(20px, -10px)
             rotate(5deg);
@@ -322,21 +301,18 @@ body::before {
 @keyframes yellowWave {
 
     0% {
-
         transform:
             translate(0, 0)
             rotate(3deg);
     }
 
     50% {
-
         transform:
             translate(-30px, -20px)
             rotate(-4deg);
     }
 
     100% {
-
         transform:
             translate(0, 0)
             rotate(3deg);
@@ -369,7 +345,7 @@ body::before {
 
 
 /* =========================================
-   MAIN GLASS CARD
+   MAIN CARD
 ========================================= */
 
 .card {
@@ -489,12 +465,6 @@ body::before {
     -webkit-backdrop-filter:
         blur(16px);
 
-    box-shadow:
-
-        inset
-        0 1px
-        rgba(255, 255, 255, 0.08);
-
     transition:
         0.2s ease;
 }
@@ -507,9 +477,6 @@ body::before {
 
     border-color:
         rgba(247, 223, 0, 0.25);
-
-    transform:
-        translateY(-1px);
 }
 
 
@@ -681,10 +648,7 @@ h1 {
 
         inset
         0 1px
-        rgba(255, 255, 255, 0.10),
-
-        0 12px 30px
-        rgba(21, 87, 166, 0.18);
+        rgba(255, 255, 255, 0.10);
 
     transition:
         0.2s ease;
@@ -693,25 +657,13 @@ h1 {
 
 .save-contact-button:hover {
 
-    background:
-
-        linear-gradient(
-            135deg,
-            rgba(40, 119, 209, 0.38),
-            rgba(247, 223, 0, 0.08)
-        );
-
     border-color:
         rgba(247, 223, 0, 0.35);
-
-    transform:
-        translateY(-1px);
 }
 
 
 /* =========================================
    SAVE CONTACT ICON
-   NO FRAME
 ========================================= */
 
 .contact-main-icon {
@@ -748,12 +700,6 @@ h1 {
     stroke-linecap: round;
 
     stroke-linejoin: round;
-
-    filter:
-        drop-shadow(
-            0 0 5px
-            rgba(247, 223, 0, 0.20)
-        );
 }
 
 
@@ -838,20 +784,13 @@ h1 {
 
     border-color:
         rgba(247, 223, 0, 0.25);
-
-    background:
-
-        linear-gradient(
-            145deg,
-            rgba(40, 119, 209, 0.24),
-            rgba(247, 223, 0, 0.06)
-        );
 }
 
 
 /* =========================================
    ICON BASE
-   NO FRAME
+   IMPORTANT:
+   NO ICON FRAME
 ========================================= */
 
 .contact-icon {
@@ -875,8 +814,7 @@ h1 {
 
 
 /* =========================================
-   CALL ICON
-   CLEAN IPHONE STYLE
+   CALL
 ========================================= */
 
 .call-icon svg {
@@ -906,50 +844,66 @@ h1 {
 
 /* =========================================
    WHATSAPP
-   REAL GREEN LOGO
+   SOLID GREEN LOGO
 ========================================= */
 
 .whatsapp-icon {
 
-    background: transparent;
+    width: 30px;
 
-    border: none;
+    height: 30px;
 
-    box-shadow: none;
+    background:
+        transparent !important;
+
+    border:
+        none !important;
+
+    box-shadow:
+        none !important;
+
+    border-radius:
+        0 !important;
 }
 
 
 .whatsapp-icon svg {
 
-    width: 27px;
+    width: 29px;
 
-    height: 27px;
+    height: 29px;
 
     display: block;
 
-    filter:
-        drop-shadow(
-            0 0 4px
-            rgba(37, 211, 102, 0.18)
-        );
+    fill: none;
+
+    stroke: none;
+
+    filter: none;
 }
 
 
-.whatsapp-bg {
+/* GREEN */
+
+.wa-green {
 
     fill:
-        #25D366;
+        #25D366 !important;
 
-    stroke: none;
+    stroke:
+        none !important;
 }
 
 
-.whatsapp-phone {
+/* WHITE */
+
+.wa-white {
 
     fill:
-        #ffffff;
+        #ffffff !important;
 
-    stroke: none;
+    stroke:
+        none !important;
 }
 
 
@@ -973,12 +927,6 @@ h1 {
     stroke-linecap: round;
 
     stroke-linejoin: round;
-
-    filter:
-        drop-shadow(
-            0 0 5px
-            rgba(247, 223, 0, 0.15)
-        );
 }
 
 
@@ -1052,26 +1000,12 @@ h1 {
     -webkit-backdrop-filter:
         blur(18px);
 
-    box-shadow:
-
-        inset
-        0 1px
-        rgba(255, 255, 255, 0.06);
-
     transition:
         0.2s ease;
 }
 
 
 .map-button:hover {
-
-    background:
-
-        linear-gradient(
-            145deg,
-            rgba(40, 119, 209, 0.23),
-            rgba(247, 223, 0, 0.05)
-        );
 
     border-color:
         rgba(247, 223, 0, 0.25);
@@ -1083,7 +1017,6 @@ h1 {
 
 /* =========================================
    MAP ICON
-   NO FRAME
 ========================================= */
 
 .map-icon {
@@ -1098,11 +1031,14 @@ h1 {
 
     place-items: center;
 
-    background: transparent;
+    background:
+        transparent;
 
-    border: none;
+    border:
+        none;
 
-    box-shadow: none;
+    box-shadow:
+        none;
 }
 
 
@@ -1122,12 +1058,6 @@ h1 {
     stroke-linecap: round;
 
     stroke-linejoin: round;
-
-    filter:
-        drop-shadow(
-            0 0 5px
-            rgba(247, 223, 0, 0.15)
-        );
 }
 
 
@@ -1219,26 +1149,12 @@ h1 {
     -webkit-backdrop-filter:
         blur(18px);
 
-    box-shadow:
-
-        inset
-        0 1px
-        rgba(255, 255, 255, 0.07);
-
     transition:
         0.2s ease;
 }
 
 
 .website-button:hover {
-
-    background:
-
-        linear-gradient(
-            135deg,
-            rgba(40, 119, 209, 0.25),
-            rgba(247, 223, 0, 0.10)
-        );
 
     border-color:
         rgba(247, 223, 0, 0.30);
@@ -1247,7 +1163,6 @@ h1 {
 
 /* =========================================
    WEBSITE ICON
-   NO FRAME
 ========================================= */
 
 .website-icon {
@@ -1260,11 +1175,14 @@ h1 {
 
     place-items: center;
 
-    background: transparent;
+    background:
+        transparent;
 
-    border: none;
+    border:
+        none;
 
-    box-shadow: none;
+    box-shadow:
+        none;
 }
 
 
@@ -1284,12 +1202,6 @@ h1 {
     stroke-linecap: round;
 
     stroke-linejoin: round;
-
-    filter:
-        drop-shadow(
-            0 0 5px
-            rgba(247, 223, 0, 0.15)
-        );
 }
 
 
@@ -1388,19 +1300,14 @@ footer p {
    SMALL SCREEN
 ========================================= */
 
-@media (
-    max-height: 720px
-) {
+@media (max-height: 720px) {
 
     .page {
-
         padding:
             8px 12px;
     }
 
-
     .card {
-
         padding:
             16px;
 
@@ -1408,13 +1315,10 @@ footer p {
             27px;
     }
 
-
     .profile {
-
         padding-bottom:
             15px;
     }
-
 
     .profile-ring {
 
@@ -1428,34 +1332,25 @@ footer p {
             11px;
     }
 
-
     h1 {
-
         font-size:
             29px;
     }
 
-
     .save-contact-button {
-
         min-height:
             53px;
     }
 
-
     .contact-button {
-
         min-height:
             56px;
     }
 
-
     .map-button {
-
         padding:
             10px;
     }
-
 
     .map-icon {
 
@@ -1466,7 +1361,6 @@ footer p {
             34px;
     }
 
-
     .map-icon svg {
 
         width:
@@ -1476,45 +1370,6 @@ footer p {
             25px;
     }
 
-
-    .wave-blue {
-
-        width:
-            600px;
-
-        height:
-            780px;
-
-        right:
-            -520px;
-    }
-
-
-    .wave-blue-soft {
-
-        width:
-            680px;
-
-        height:
-            880px;
-
-        right:
-            -590px;
-    }
-
-
-    .wave-yellow {
-
-        width:
-            550px;
-
-        height:
-            700px;
-
-        right:
-            -490px;
-    }
-
 }
 
 
@@ -1522,12 +1377,9 @@ footer p {
    REDUCE MOTION
 ========================================= */
 
-@media (
-    prefers-reduced-motion: reduce
-) {
+@media (prefers-reduced-motion: reduce) {
 
     .wave {
-
         animation: none;
     }
 
