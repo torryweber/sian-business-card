@@ -1,11 +1,21 @@
 /* =========================================
+   AIK HUAT HARDWARE
    SIAN DIGITAL BUSINESS CARD
    SERVICE WORKER
+========================================= */
+
+
+/* =========================================
+   CACHE VERSION
 ========================================= */
 
 const CACHE_NAME =
     "sian-card-v1";
 
+
+/* =========================================
+   FILES TO CACHE
+========================================= */
 
 const ASSETS = [
 
@@ -19,17 +29,17 @@ const ASSETS = [
 
     "./manifest.json",
 
-    "./assets/aik-huat-logo.png",
+    "./aik-huat-logo.png",
 
-    "./assets/sian-profile.png",
+    "./sian-profile.png",
 
-    "./assets/favicon.svg",
+    "./favicon.svg",
 
-    "./assets/icon-192.svg",
+    "./icon-192.svg",
 
-    "./assets/icon-512.svg",
+    "./icon-512.svg",
 
-    "./assets/share-preview.svg"
+    "./share-preview.svg"
 
 ];
 
@@ -45,14 +55,15 @@ self.addEventListener(
         event.waitUntil(
 
             caches
-                .open(
-                    CACHE_NAME
-                )
+                .open(CACHE_NAME)
                 .then(
-                    cache =>
-                        cache.addAll(
+                    cache => {
+
+                        return cache.addAll(
                             ASSETS
-                        )
+                        );
+
+                    }
                 )
 
         );
@@ -74,11 +85,12 @@ self.addEventListener(
 
         event.waitUntil(
 
-            caches.keys()
+            caches
+                .keys()
                 .then(
-                    keys =>
+                    keys => {
 
-                        Promise.all(
+                        return Promise.all(
 
                             keys
                                 .filter(
@@ -86,6 +98,7 @@ self.addEventListener(
                                         key !==
                                         CACHE_NAME
                                 )
+
                                 .map(
                                     key =>
                                         caches.delete(
@@ -93,8 +106,9 @@ self.addEventListener(
                                         )
                                 )
 
-                        )
+                        );
 
+                    }
                 )
 
         );
@@ -114,6 +128,9 @@ self.addEventListener(
     "fetch",
     event => {
 
+
+        /* Only handle GET */
+
         if (
             event.request.method !==
             "GET"
@@ -126,59 +143,82 @@ self.addEventListener(
 
         event.respondWith(
 
-            caches.match(
-                event.request
-            )
-            .then(
-                cachedResponse => {
+            caches
+                .match(
+                    event.request
+                )
 
-                    if (
-                        cachedResponse
-                    ) {
-
-                        return cachedResponse;
-
-                    }
+                .then(
+                    cachedResponse => {
 
 
-                    return fetch(
-                        event.request
-                    )
-                    .then(
-                        response => {
+                        /* =========================
+                           CACHE FOUND
+                        ========================== */
 
-                            const copy =
-                                response.clone();
+                        if (
+                            cachedResponse
+                        ) {
 
-
-                            caches.open(
-                                CACHE_NAME
-                            )
-                            .then(
-                                cache => {
-
-                                    cache.put(
-                                        event.request,
-                                        copy
-                                    );
-
-                                }
-                            );
-
-
-                            return response;
+                            return cachedResponse;
 
                         }
-                    )
-                    .catch(
-                        () =>
-                            caches.match(
-                                "./index.html"
-                            )
-                    );
 
-                }
-            )
+
+                        /* =========================
+                           FETCH FROM NETWORK
+                        ========================== */
+
+                        return fetch(
+                            event.request
+                        )
+
+                        .then(
+                            response => {
+
+
+                                /* Clone response */
+
+                                const responseClone =
+                                    response.clone();
+
+
+                                /* Save to cache */
+
+                                caches
+                                    .open(
+                                        CACHE_NAME
+                                    )
+
+                                    .then(
+                                        cache => {
+
+                                            cache.put(
+                                                event.request,
+                                                responseClone
+                                            );
+
+                                        }
+                                    );
+
+
+                                return response;
+
+                            }
+                        )
+
+                        .catch(
+                            () => {
+
+                                return caches.match(
+                                    "./index.html"
+                                );
+
+                            }
+                        );
+
+                    }
+                )
 
         );
 
