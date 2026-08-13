@@ -14,13 +14,16 @@
     box-sizing: border-box;
 }
 
+
 html,
 body {
     width: 100%;
     min-height: 100%;
 }
 
+
 body {
+
     font-family:
         Inter,
         -apple-system,
@@ -45,40 +48,31 @@ body {
 
 :root {
 
-    --blue:
-        #1557a6;
+    --blue: #1557a6;
 
-    --blue-light:
-        #2877d1;
+    --blue-light: #2877d1;
 
-    --blue-dark:
-        #071d3b;
+    --blue-dark: #071d3b;
 
-    --yellow:
-        #f7df00;
+    --yellow: #f7df00;
 
-    --yellow-light:
-        #fff45c;
+    --yellow-light: #fff45c;
 
-    --white:
-        #ffffff;
+    --white: #ffffff;
 
-    --muted:
-        #aab6c7;
+    --muted: #aab6c7;
 
-    --glass:
-        rgba(13, 30, 52, 0.72);
+    --glass: rgba(13, 30, 52, 0.72);
 
-    --glass-light:
-        rgba(255, 255, 255, 0.07);
+    --glass-light: rgba(255, 255, 255, 0.07);
 
-    --border:
-        rgba(255, 255, 255, 0.12);
+    --border: rgba(255, 255, 255, 0.12);
+
 }
 
 
 /* =========================================
-   BASE BACKGROUND
+   BACKGROUND
 ========================================= */
 
 body::before {
@@ -164,7 +158,7 @@ body::before {
 
 
 /* =========================================
-   MOVING BACKGROUND WAVES
+   MOVING WAVES
 ========================================= */
 
 .wave {
@@ -182,10 +176,6 @@ body::before {
     will-change: transform;
 }
 
-
-/* =========================================
-   BLUE WAVE
-========================================= */
 
 .wave-blue {
 
@@ -218,10 +208,6 @@ body::before {
 }
 
 
-/* =========================================
-   SOFT BLUE WAVE
-========================================= */
-
 .wave-blue-soft {
 
     width: 820px;
@@ -248,10 +234,6 @@ body::before {
         infinite;
 }
 
-
-/* =========================================
-   YELLOW WAVE
-========================================= */
 
 .wave-yellow {
 
@@ -281,7 +263,7 @@ body::before {
 
 
 /* =========================================
-   WAVE ANIMATIONS
+   WAVE ANIMATION
 ========================================= */
 
 @keyframes blueWave {
@@ -292,7 +274,6 @@ body::before {
             translate(0, 0)
             rotate(-4deg)
             scale(1);
-
     }
 
     50% {
@@ -301,7 +282,6 @@ body::before {
             translate(-45px, 18px)
             rotate(4deg)
             scale(1.04);
-
     }
 
     100% {
@@ -310,7 +290,6 @@ body::before {
             translate(0, 0)
             rotate(-4deg)
             scale(1);
-
     }
 }
 
@@ -322,7 +301,6 @@ body::before {
         transform:
             translate(20px, -10px)
             rotate(5deg);
-
     }
 
     50% {
@@ -330,7 +308,6 @@ body::before {
         transform:
             translate(-35px, 25px)
             rotate(-4deg);
-
     }
 
     100% {
@@ -338,7 +315,6 @@ body::before {
         transform:
             translate(20px, -10px)
             rotate(5deg);
-
     }
 }
 
@@ -350,7 +326,6 @@ body::before {
         transform:
             translate(0, 0)
             rotate(3deg);
-
     }
 
     50% {
@@ -358,7 +333,6 @@ body::before {
         transform:
             translate(-30px, -20px)
             rotate(-4deg);
-
     }
 
     100% {
@@ -366,7 +340,6 @@ body::before {
         transform:
             translate(0, 0)
             rotate(3deg);
-
     }
 }
 
@@ -478,7 +451,7 @@ body::before {
 
 
 /* =========================================
-   SHARE BUTTON
+   SHARE
 ========================================= */
 
 .share-button {
@@ -657,8 +630,7 @@ h1 {
 
 
 /* =========================================
-   SAVE CONTACT BUTTON
-   GLASS ONLY
+   SAVE CONTACT
 ========================================= */
 
 .save-contact-button {
@@ -804,7 +776,6 @@ h1 {
 
 /* =========================================
    CONTACT BUTTON
-   GLASS ONLY
 ========================================= */
 
 .contact-button {
@@ -879,8 +850,8 @@ h1 {
 
 
 /* =========================================
-   CONTACT ICON
-   NO FRAME / NO BOX
+   ICON BASE
+   NO FRAME
 ========================================= */
 
 .contact-icon {
@@ -903,11 +874,94 @@ h1 {
 }
 
 
-.contact-icon svg {
+/* =========================================
+   CALL ICON
+   CLEAN IPHONE STYLE
+========================================= */
 
-    width: 23px;
+.call-icon svg {
 
-    height: 23px;
+    width: 25px;
+
+    height: 25px;
+
+    fill: none;
+
+    stroke:
+        var(--yellow);
+
+    stroke-width: 1.7;
+
+    stroke-linecap: round;
+
+    stroke-linejoin: round;
+
+    filter:
+        drop-shadow(
+            0 0 5px
+            rgba(247, 223, 0, 0.18)
+        );
+}
+
+
+/* =========================================
+   WHATSAPP
+   REAL GREEN LOGO
+========================================= */
+
+.whatsapp-icon {
+
+    background: transparent;
+
+    border: none;
+
+    box-shadow: none;
+}
+
+
+.whatsapp-icon svg {
+
+    width: 27px;
+
+    height: 27px;
+
+    display: block;
+
+    filter:
+        drop-shadow(
+            0 0 4px
+            rgba(37, 211, 102, 0.18)
+        );
+}
+
+
+.whatsapp-bg {
+
+    fill:
+        #25D366;
+
+    stroke: none;
+}
+
+
+.whatsapp-phone {
+
+    fill:
+        #ffffff;
+
+    stroke: none;
+}
+
+
+/* =========================================
+   EMAIL
+========================================= */
+
+.email-icon svg {
+
+    width: 25px;
+
+    height: 25px;
 
     fill: none;
 
@@ -925,72 +979,6 @@ h1 {
             0 0 5px
             rgba(247, 223, 0, 0.15)
         );
-}
-
-
-/* =========================================
-   WHATSAPP
-   REAL LOGO
-   NO FRAME
-========================================= */
-
-.contact-button.whatsapp {
-
-    background:
-
-        linear-gradient(
-            145deg,
-            rgba(21, 87, 166, 0.16),
-            rgba(255, 255, 255, 0.045)
-        );
-
-    border-color:
-        rgba(255, 255, 255, 0.10);
-}
-
-
-.whatsapp-icon {
-
-    background:
-        transparent;
-
-    border: none;
-
-    box-shadow: none;
-}
-
-
-.whatsapp-icon svg {
-
-    width: 25px;
-
-    height: 25px;
-
-    filter:
-        drop-shadow(
-            0 0 4px
-            rgba(37, 211, 102, 0.15)
-        );
-}
-
-
-.whatsapp-circle {
-
-    fill:
-        #25D366;
-
-    stroke:
-        none;
-}
-
-
-.whatsapp-phone {
-
-    fill:
-        #ffffff;
-
-    stroke:
-        none;
 }
 
 
@@ -1024,7 +1012,6 @@ h1 {
 
 /* =========================================
    MAP BUTTON
-   GLASS ONLY
 ========================================= */
 
 .map-button {
@@ -1180,15 +1167,12 @@ h1 {
 
     font-size: 25px;
 
-    font-weight: 500;
-
     line-height: 1;
 }
 
 
 /* =========================================
-   WEBSITE BUTTON
-   GLASS ONLY
+   WEBSITE
 ========================================= */
 
 .website-button {
@@ -1544,8 +1528,7 @@ footer p {
 
     .wave {
 
-        animation:
-            none;
+        animation: none;
     }
 
 }
