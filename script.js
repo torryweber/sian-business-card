@@ -245,7 +245,7 @@ async function createVCard() {
 
         "FN:Goh Chun Sian",
 
-        "N:Goh;Chun Sian;;;",
+        "N:;;;;",
 
         "ORG:Aik Huat Hardware",
 
