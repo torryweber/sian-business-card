@@ -1,23 +1,8 @@
-/* =========================================
-   AIK HUAT HARDWARE
-   SIAN DIGITAL BUSINESS CARD
-   SERVICE WORKER
-========================================= */
-
-
-/* =========================================
-   CACHE VERSION
-========================================= */
-
 const CACHE_NAME =
-    "sian-card-v3";
+    "sian-card-v4";
 
 
-/* =========================================
-   FILES TO CACHE
-========================================= */
-
-const ASSETS = [
+const FILES_TO_CACHE = [
 
     "./",
 
@@ -29,19 +14,19 @@ const ASSETS = [
 
     "./manifest.json",
 
-    "./aik-huat-logo.png",
-
-    "./sian-profile.png",
-
-    "./share-contact.png",
-
     "./favicon.svg",
 
     "./icon-192.svg",
 
     "./icon-512.svg",
 
-    "./share-preview.svg"
+    "./aik-huat-logo.png",
+
+    "./sian-profile.png",
+
+    "./whatsapp-logo.svg",
+
+    "./share-preview.png"
 
 ];
 
@@ -56,22 +41,21 @@ self.addEventListener(
 
         event.waitUntil(
 
-            caches
-                .open(CACHE_NAME)
-                .then(
-                    cache => {
+            caches.open(
+                CACHE_NAME
+            ).then(
+                cache => {
 
-                        return cache.addAll(
-                            ASSETS
-                        );
+                    return cache.addAll(
+                        FILES_TO_CACHE
+                    );
 
-                    }
-                )
+                }
+            )
 
         );
 
         self.skipWaiting();
-
     }
 );
 
@@ -86,23 +70,22 @@ self.addEventListener(
 
         event.waitUntil(
 
-            caches
-                .keys()
+            caches.keys()
                 .then(
-                    keys => {
+                    cacheNames => {
 
                         return Promise.all(
 
-                            keys
+                            cacheNames
                                 .filter(
-                                    key =>
-                                        key !==
+                                    name =>
+                                        name !==
                                         CACHE_NAME
                                 )
                                 .map(
-                                    key =>
+                                    name =>
                                         caches.delete(
-                                            key
+                                            name
                                         )
                                 )
 
@@ -114,7 +97,6 @@ self.addEventListener(
         );
 
         self.clients.claim();
-
     }
 );
 
@@ -127,112 +109,68 @@ self.addEventListener(
     "fetch",
     event => {
 
-        /* Only handle GET requests */
-
         if (
-            event.request.method !==
-            "GET"
+            event.request.method !== "GET"
         ) {
 
             return;
-
         }
 
 
         event.respondWith(
 
-            caches
-                .match(
-                    event.request
-                )
+            caches.match(
+                event.request
+            ).then(
+                cachedResponse => {
 
-                .then(
-                    cachedResponse => {
+                    if (cachedResponse) {
 
-                        /* =========================
-                           USE CACHE IF AVAILABLE
-                        ========================== */
-
-                        if (
-                            cachedResponse
-                        ) {
-
-                            return cachedResponse;
-
-                        }
+                        return cachedResponse;
+                    }
 
 
-                        /* =========================
-                           OTHERWISE USE NETWORK
-                        ========================== */
+                    return fetch(
+                        event.request
+                    ).then(
+                        response => {
 
-                        return fetch(
-                            event.request
-                        )
-
-                        .then(
-                            response => {
-
-                                /*
-                                 * Only cache valid
-                                 * successful responses.
-                                 */
-
-                                if (
-                                    !response ||
-                                    response.status !== 200 ||
-                                    response.type !==
-                                    "basic"
-                                ) {
-
-                                    return response;
-
-                                }
-
-
-                                const responseClone =
-                                    response.clone();
-
-
-                                caches
-                                    .open(
-                                        CACHE_NAME
-                                    )
-                                    .then(
-                                        cache => {
-
-                                            cache.put(
-                                                event.request,
-                                                responseClone
-                                            );
-
-                                        }
-                                    );
-
+                            if (
+                                !response ||
+                                response.status !== 200 ||
+                                response.type ===
+                                    "opaque"
+                            ) {
 
                                 return response;
-
                             }
-                        )
 
-                        .catch(
-                            () => {
 
-                                /*
-                                 * Offline fallback
-                                 */
+                            const responseClone =
+                                response.clone();
 
-                                return caches.match(
-                                    "./index.html"
-                                );
 
-                            }
-                        );
+                            caches.open(
+                                CACHE_NAME
+                            ).then(
+                                cache => {
 
-                    }
-                )
+                                    cache.put(
+                                        event.request,
+                                        responseClone
+                                    );
+
+                                }
+                            );
+
+
+                            return response;
+                        }
+                    );
+
+                }
+            )
 
         );
-
     }
 );
