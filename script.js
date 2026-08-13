@@ -4,6 +4,11 @@
    DIGITAL BUSINESS CARD
 ========================================= */
 
+
+/* =========================================
+   CARD URL
+========================================= */
+
 const CARD_URL =
     "https://torryweber.github.io/sian-business-card/";
 
@@ -38,34 +43,49 @@ const contact = {
 ========================================= */
 
 const saveContactButton =
-    document.getElementById("saveContactButton");
+    document.getElementById(
+        "saveContactButton"
+    );
 
 const shareButton =
-    document.getElementById("shareButton");
+    document.getElementById(
+        "shareButton"
+    );
 
 const toast =
-    document.getElementById("toast");
+    document.getElementById(
+        "toast"
+    );
 
 
 /* =========================================
-   TOAST
+   TOAST MESSAGE
 ========================================= */
 
 function showToast(message) {
 
     if (!toast) return;
 
-    toast.textContent = message;
+    toast.textContent =
+        message;
 
-    toast.classList.add("show");
+    toast.classList.add(
+        "show"
+    );
 
-    clearTimeout(window.toastTimer);
+    clearTimeout(
+        window.toastTimer
+    );
 
-    window.toastTimer = setTimeout(() => {
+    window.toastTimer =
+        setTimeout(() => {
 
-        toast.classList.remove("show");
+            toast.classList.remove(
+                "show"
+            );
 
-    }, 2200);
+        }, 2200);
+
 }
 
 
@@ -80,7 +100,9 @@ function arrayBufferToBase64(buffer) {
     const bytes =
         new Uint8Array(buffer);
 
-    const chunkSize = 0x8000;
+    const chunkSize =
+        0x8000;
+
 
     for (
         let i = 0;
@@ -97,23 +119,31 @@ function arrayBufferToBase64(buffer) {
                 )
             );
 
+
         binary +=
-            String.fromCharCode(...chunk);
+            String.fromCharCode(
+                ...chunk
+            );
+
     }
 
+
     return btoa(binary);
+
 }
 
 
 /* =========================================
-   FOLD PHOTO DATA
+   FOLD BASE64 FOR VCARD
 ========================================= */
 
 function foldBase64(base64) {
 
-    const lineLength = 72;
+    const lineLength =
+        72;
 
-    const result = [];
+    const lines = [];
+
 
     for (
         let i = 0;
@@ -127,18 +157,28 @@ function foldBase64(base64) {
                 i + lineLength
             );
 
+
         if (i === 0) {
 
-            result.push(part);
+            lines.push(
+                part
+            );
 
         } else {
 
-            result.push(" " + part);
+            lines.push(
+                " " + part
+            );
 
         }
+
     }
 
-    return result.join("\r\n");
+
+    return lines.join(
+        "\r\n"
+    );
+
 }
 
 
@@ -154,45 +194,65 @@ async function getProfilePhoto() {
             await fetch(
                 contact.photo,
                 {
-                    cache: "no-store"
+                    cache:
+                        "no-store"
                 }
             );
+
 
         if (!response.ok) {
 
             throw new Error(
-                "Profile photo could not be loaded"
+                "Profile photo could not be loaded."
             );
+
         }
+
 
         const contentType =
             response.headers.get(
                 "content-type"
             ) || "image/png";
 
+
         const buffer =
             await response.arrayBuffer();
 
-        const base64 =
-            arrayBufferToBase64(buffer);
 
-        let imageType = "PNG";
+        const base64 =
+            arrayBufferToBase64(
+                buffer
+            );
+
+
+        let imageType =
+            "PNG";
+
 
         if (
             contentType
                 .toLowerCase()
                 .includes("jpeg") ||
+
             contentType
                 .toLowerCase()
                 .includes("jpg")
         ) {
 
-            imageType = "JPEG";
+            imageType =
+                "JPEG";
+
         }
 
+
         return {
-            type: imageType,
-            base64: base64
+
+            type:
+                imageType,
+
+            base64:
+                base64
+
         };
 
     } catch (error) {
@@ -202,8 +262,11 @@ async function getProfilePhoto() {
             error
         );
 
+
         return null;
+
     }
+
 }
 
 
@@ -213,27 +276,26 @@ async function getProfilePhoto() {
 
 async function createVCard() {
 
-    const photo =
-        await getProfilePhoto();
-
-
     /*
-       IMPORTANT FOR iPHONE
+       IMPORTANT
 
-       vCard N format:
+       We intentionally use:
 
-       N:Family;Given;Additional;Prefix;Suffix
+       FN:Goh Chun Sian
 
-       We use:
+       and:
 
-       Family = Goh
-       Given  = Chun Sian
+       N:;;;;
 
-       FN remains the complete display name.
+       This prevents the VCF from supplying
+       first-name / last-name components.
 
-       This makes Apple Contacts reliably
-       recognise the contact name.
+       The contact should therefore display
+       exactly:
+
+       Goh Chun Sian
     */
+
 
     const lines = [
 
@@ -241,7 +303,7 @@ async function createVCard() {
 
         "VERSION:3.0",
 
-        "PRODID:-//Aik Huat Hardware//Digital Card//EN",
+        "PRODID:-//Aik Huat Hardware//Digital Business Card//EN",
 
         "FN:Goh Chun Sian",
 
@@ -255,38 +317,48 @@ async function createVCard() {
 
         "EMAIL;TYPE=WORK:gcs@aikhuathardware.com",
 
-        "URL:https://aikhuathardware.com/",
-
-        "REV:" + new Date().toISOString(),
-
-        "END:VCARD"
+        "URL:https://aikhuathardware.com/"
 
     ];
 
 
     /* =====================================
-       EMBED PROFILE PHOTO
+       PROFILE PHOTO
     ====================================== */
+
+    const photo =
+        await getProfilePhoto();
+
 
     if (photo) {
 
-        /*
-           Insert PHOTO before END:VCARD.
-        */
+        lines.push(
 
-        lines.splice(
-            lines.length - 1,
-            0,
             `PHOTO;ENCODING=b;TYPE=${photo.type}:${foldBase64(photo.base64)}`
+
         );
+
     }
 
 
+    /* =====================================
+       END VCARD
+    ====================================== */
+
+    lines.push(
+        "END:VCARD"
+    );
+
+
     /*
-       CRLF is important for vCard/iOS.
+       Use CRLF because it is the standard
+       line ending expected by vCard/iOS.
     */
 
-    return lines.join("\r\n");
+    return lines.join(
+        "\r\n"
+    );
+
 }
 
 
@@ -303,12 +375,17 @@ async function saveContact() {
         );
 
 
+        /*
+           Create the VCF
+           with embedded photo.
+        */
+
         const vcf =
             await createVCard();
 
 
         /*
-           UTF-8 vCard file
+           Create VCF file.
         */
 
         const blob =
@@ -322,34 +399,55 @@ async function saveContact() {
 
 
         const url =
-            URL.createObjectURL(blob);
+            URL.createObjectURL(
+                blob
+            );
 
+
+        /*
+           Create temporary download link.
+        */
 
         const link =
-            document.createElement("a");
+            document.createElement(
+                "a"
+            );
 
 
-        link.href = url;
+        link.href =
+            url;
+
 
         link.download =
             "Goh-Chun-Sian.vcf";
 
 
-        link.style.display = "none";
+        link.style.display =
+            "none";
 
 
-        document.body.appendChild(link);
+        document.body.appendChild(
+            link
+        );
 
 
         link.click();
 
 
-        document.body.removeChild(link);
+        document.body.removeChild(
+            link
+        );
 
+
+        /*
+           Release object URL.
+        */
 
         setTimeout(() => {
 
-            URL.revokeObjectURL(url);
+            URL.revokeObjectURL(
+                url
+            );
 
         }, 2000);
 
@@ -366,10 +464,13 @@ async function saveContact() {
             error
         );
 
+
         showToast(
             "Unable to create contact"
         );
+
     }
+
 }
 
 
@@ -383,11 +484,12 @@ if (saveContactButton) {
         "click",
         saveContact
     );
+
 }
 
 
 /* =========================================
-   SHARE CARD
+   SHARE DIGITAL CARD
 ========================================= */
 
 async function shareCard() {
@@ -405,8 +507,14 @@ async function shareCard() {
 
         url:
             CARD_URL
+
     };
 
+
+    /*
+       Use native iPhone share sheet
+       when available.
+    */
 
     if (
         navigator.share
@@ -418,18 +526,27 @@ async function shareCard() {
                 shareData
             );
 
+
             return;
 
         } catch (error) {
 
+            /*
+               User cancelled sharing.
+            */
+
             if (
                 error &&
-                error.name === "AbortError"
+                error.name ===
+                    "AbortError"
             ) {
 
                 return;
+
             }
+
         }
+
     }
 
 
@@ -443,16 +560,20 @@ async function shareCard() {
             CARD_URL
         );
 
+
         showToast(
             "Card link copied"
         );
+
 
     } catch {
 
         showToast(
             CARD_URL
         );
+
     }
+
 }
 
 
@@ -466,6 +587,7 @@ if (shareButton) {
         "click",
         shareCard
     );
+
 }
 
 
@@ -482,16 +604,31 @@ if (
         () => {
 
             navigator.serviceWorker
-                .register("./sw.js")
-                .catch(error => {
+                .register(
+                    "./sw.js"
+                )
+                .then(
+                    registration => {
 
-                    console.log(
-                        "Service worker error:",
-                        error
-                    );
+                        console.log(
+                            "Service worker registered:",
+                            registration.scope
+                        );
 
-                });
+                    }
+                )
+                .catch(
+                    error => {
+
+                        console.log(
+                            "Service worker registration failed:",
+                            error
+                        );
+
+                    }
+                );
 
         }
     );
+
 }
