@@ -13,18 +13,20 @@ const CARD_URL =
 
 
 /* =========================================
+   SHARE IMAGE
+========================================= */
+
+const SHARE_IMAGE =
+    "share-contact.png";
+
+
+/* =========================================
    CONTACT INFORMATION
 ========================================= */
 
 const contact = {
 
-    firstName:
-        "Chun Sian",
-
-    lastName:
-        "Goh",
-
-    fullName:
+    name:
         "Goh Chun Sian",
 
     title:
@@ -98,7 +100,7 @@ function showToast(message) {
                 );
 
             },
-            1800
+            2000
         );
 
 }
@@ -110,15 +112,21 @@ function showToast(message) {
 
 function createVCard() {
 
-    const vcard = [
+    return [
 
         "BEGIN:VCARD",
 
         "VERSION:3.0",
 
-        `N:${contact.lastName};${contact.firstName};;;`,
+        /*
+         * IMPORTANT:
+         * Use FN only.
+         *
+         * This prevents the name from being
+         * split into First Name / Last Name.
+         */
 
-        `FN:${contact.fullName}`,
+        `FN:${contact.name}`,
 
         `ORG:${contact.company}`,
 
@@ -133,9 +141,6 @@ function createVCard() {
         "END:VCARD"
 
     ].join("\r\n");
-
-
-    return vcard;
 
 }
 
@@ -211,63 +216,192 @@ function saveContact() {
 
 
 /* =========================================
-   SHARE DIGITAL CARD
+   LOAD SHARE IMAGE
 ========================================= */
 
-async function shareCard() {
-
-    const shareData = {
-
-        title:
-            "Goh Chun Sian | Sales Manager",
-
-        text:
-            "Goh Chun Sian — Sales Manager\nAik Huat Hardware",
-
-        url:
-            CARD_URL
-
-    };
-
+async function getShareImageFile() {
 
     try {
 
+        const response =
+            await fetch(
+                SHARE_IMAGE,
+                {
+                    cache:
+                        "no-cache"
+                }
+            );
+
+
         if (
-            navigator.share
+            !response.ok
         ) {
 
-            await navigator.share(
-                shareData
-            );
+            return null;
 
         }
 
-        else {
 
-            await navigator.clipboard.writeText(
-                CARD_URL
-            );
+        const blob =
+            await response.blob();
 
-            showToast(
-                "Card link copied"
-            );
 
-        }
+        return new File(
+            [blob],
+            "Goh-Chun-Sian.png",
+            {
+                type:
+                    blob.type ||
+                    "image/png"
+            }
+        );
 
     }
 
     catch (error) {
 
-        if (
-            error.name !==
-            "AbortError"
-        ) {
+        console.error(
+            "Share image error:",
+            error
+        );
 
-            showToast(
-                "Unable to share"
-            );
+        return null;
+
+    }
+
+}
+
+
+/* =========================================
+   SHARE DIGITAL CARD + IMAGE
+========================================= */
+
+async function shareCard() {
+
+    const shareText =
+        "Goh Chun Sian — Sales Manager\nAik Huat Hardware";
+
+
+    const imageFile =
+        await getShareImageFile();
+
+
+    /* =====================================
+       SHARE WITH IMAGE
+    ====================================== */
+
+    if (
+        imageFile &&
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare({
+            files:
+                [imageFile]
+        })
+    ) {
+
+        try {
+
+            await navigator.share({
+
+                title:
+                    "Goh Chun Sian | Sales Manager",
+
+                text:
+                    `${shareText}\n${CARD_URL}`,
+
+                files:
+                    [imageFile]
+
+            });
+
+
+            return;
 
         }
+
+        catch (error) {
+
+            if (
+                error.name ===
+                "AbortError"
+            ) {
+
+                return;
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================
+       NORMAL SHARE FALLBACK
+    ====================================== */
+
+    if (
+        navigator.share
+    ) {
+
+        try {
+
+            await navigator.share({
+
+                title:
+                    "Goh Chun Sian | Sales Manager",
+
+                text:
+                    shareText,
+
+                url:
+                    CARD_URL
+
+            });
+
+
+            return;
+
+        }
+
+        catch (error) {
+
+            if (
+                error.name ===
+                "AbortError"
+            ) {
+
+                return;
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================
+       COPY LINK FALLBACK
+    ====================================== */
+
+    try {
+
+        await navigator.clipboard.writeText(
+            CARD_URL
+        );
+
+
+        showToast(
+            "Card link copied"
+        );
+
+    }
+
+    catch {
+
+        showToast(
+            "Unable to share"
+        );
 
     }
 
@@ -308,7 +442,14 @@ if (
                     "sw.js"
                 )
                 .catch(
-                    () => {}
+                    error => {
+
+                        console.log(
+                            "Service Worker:",
+                            error
+                        );
+
+                    }
                 );
 
         }
