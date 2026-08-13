@@ -1,6 +1,6 @@
 /* =========================================
-   AIK HUAT HARDWARE
    SIAN DIGITAL BUSINESS CARD
+   SCRIPT
 ========================================= */
 
 
@@ -13,14 +13,6 @@ const CARD_URL =
 
 
 /* =========================================
-   SHARE IMAGE
-========================================= */
-
-const SHARE_IMAGE =
-    "share-contact.png";
-
-
-/* =========================================
    CONTACT INFORMATION
 ========================================= */
 
@@ -29,23 +21,26 @@ const contact = {
     name:
         "Goh Chun Sian",
 
-    title:
-        "Sales Manager",
-
     company:
         "Aik Huat Hardware",
 
-    phone:
+    title:
+        "Sales Manager",
+
+    mobile:
         "+60102907356",
 
     whatsapp:
-        "60102907356",
+        "+60102907356",
 
     email:
         "gcs@aikhuathardware.com",
 
     website:
-        "https://aikhuathardware.com/"
+        "https://aikhuathardware.com/",
+
+    photo:
+        "sian-profile.png"
 
 };
 
@@ -78,36 +73,197 @@ const toast =
 
 function showToast(message) {
 
-    if (!toast) {
-        return;
-    }
-
+    if (!toast) return;
 
     toast.textContent =
         message;
-
 
     toast.classList.add(
         "show"
     );
 
-
     clearTimeout(
         window.toastTimer
     );
 
-
     window.toastTimer =
-        setTimeout(
-            () => {
+        setTimeout(() => {
 
-                toast.classList.remove(
-                    "show"
-                );
+            toast.classList.remove(
+                "show"
+            );
 
-            },
-            2000
+        }, 2200);
+
+}
+
+
+/* =========================================
+   ARRAY BUFFER → BASE64
+========================================= */
+
+function arrayBufferToBase64(buffer) {
+
+    let binary = "";
+
+    const bytes =
+        new Uint8Array(buffer);
+
+    const chunkSize = 0x8000;
+
+    for (
+        let i = 0;
+        i < bytes.length;
+        i += chunkSize
+    ) {
+
+        const chunk =
+            bytes.subarray(
+                i,
+                Math.min(
+                    i + chunkSize,
+                    bytes.length
+                )
+            );
+
+        binary +=
+            String.fromCharCode(
+                ...chunk
+            );
+
+    }
+
+    return btoa(binary);
+
+}
+
+
+/* =========================================
+   FOLD VCF PHOTO DATA
+========================================= */
+
+function foldBase64(base64) {
+
+    /*
+       vCard allows long lines to be
+       folded.
+
+       Each continuation line starts
+       with one space.
+    */
+
+    const lineLength = 72;
+
+    const lines = [];
+
+    for (
+        let i = 0;
+        i < base64.length;
+        i += lineLength
+    ) {
+
+        lines.push(
+            i === 0
+                ? base64.substring(
+                    i,
+                    i + lineLength
+                )
+                : " " +
+                  base64.substring(
+                    i,
+                    i + lineLength
+                  )
         );
+
+    }
+
+    return lines.join("\r\n");
+
+}
+
+
+/* =========================================
+   LOAD PROFILE PHOTO
+========================================= */
+
+async function getProfilePhoto() {
+
+    try {
+
+        const response =
+            await fetch(
+                contact.photo,
+                {
+                    cache:
+                        "no-cache"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load profile photo"
+            );
+
+        }
+
+
+        const contentType =
+            response.headers.get(
+                "content-type"
+            ) || "image/png";
+
+
+        const buffer =
+            await response.arrayBuffer();
+
+
+        const base64 =
+            arrayBufferToBase64(
+                buffer
+            );
+
+
+        let imageType =
+            "PNG";
+
+
+        if (
+            contentType
+                .toLowerCase()
+                .includes("jpeg") ||
+            contentType
+                .toLowerCase()
+                .includes("jpg")
+        ) {
+
+            imageType =
+                "JPEG";
+
+        }
+
+
+        return {
+
+            type:
+                imageType,
+
+            base64:
+                base64
+
+        };
+
+    } catch (error) {
+
+        console.error(
+            "Profile photo error:",
+            error
+        );
+
+        return null;
+
+    }
 
 }
 
@@ -116,37 +272,36 @@ function showToast(message) {
    CREATE VCARD
 ========================================= */
 
-function createVCard() {
+async function createVCard() {
 
     /*
-     * IMPORTANT FOR iPHONE
-     *
-     * Apple Contacts does not always display
-     * FN correctly when N is completely empty.
-     *
-     * Therefore:
-     *
-     * Family Name = EMPTY
-     * Given Name  = Goh Chun Sian
-     *
-     * iPhone displays:
-     *
-     * Goh Chun Sian
-     *
-     * instead of:
-     *
-     * Chun Sian Goh
-     *
-     * There is NO family/last name.
-     */
+       Load Sian's profile picture
+       and embed it directly into
+       the contact file.
+    */
 
-    const vcard = [
+    const photo =
+        await getProfilePhoto();
+
+
+    const lines = [
 
         "BEGIN:VCARD",
 
         "VERSION:3.0",
 
-        "N:;Goh Chun Sian;;;",
+        /*
+           IMPORTANT:
+
+           FN is the complete name.
+
+           This prevents iPhone from
+           displaying:
+
+           Chun Sian Goh
+
+           or splitting first/last name.
+        */
 
         "FN:Goh Chun Sian",
 
@@ -154,18 +309,38 @@ function createVCard() {
 
         "TITLE:Sales Manager",
 
-        "TEL;TYPE=CELL,VOICE:+60102907356",
+        "TEL;TYPE=CELL:+60102907356",
 
-        "EMAIL;TYPE=INTERNET:gcs@aikhuathardware.com",
+        "TEL;TYPE=WORK,VOICE:+60102907356",
 
-        "URL:https://aikhuathardware.com/",
+        "EMAIL;TYPE=WORK:gcs@aikhuathardware.com",
 
+        "URL:https://aikhuathardware.com/"
+
+    ];
+
+
+    /* =====================================
+       ADD PROFILE PHOTO
+    ====================================== */
+
+    if (photo) {
+
+        lines.push(
+            `PHOTO;ENCODING=b;TYPE=${photo.type}:${foldBase64(photo.base64)}`
+        );
+
+    }
+
+
+    lines.push(
         "END:VCARD"
+    );
 
-    ].join("\r\n");
 
-
-    return vcard;
+    return lines.join(
+        "\r\n"
+    );
 
 }
 
@@ -174,23 +349,32 @@ function createVCard() {
    SAVE CONTACT
 ========================================= */
 
-function saveContact() {
+async function saveContact() {
 
     try {
 
-        const vcard =
-            createVCard();
+        /*
+           Let user know we're preparing
+           the contact.
+        */
 
-
-        console.log(
-            "VCF:",
-            vcard
+        showToast(
+            "Preparing contact..."
         );
+
+
+        /*
+           Create VCF with embedded
+           profile picture.
+        */
+
+        const vcf =
+            await createVCard();
 
 
         const blob =
             new Blob(
-                [vcard],
+                [vcf],
                 {
                     type:
                         "text/vcard;charset=utf-8"
@@ -218,10 +402,6 @@ function saveContact() {
             "Goh-Chun-Sian.vcf";
 
 
-        link.style.display =
-            "none";
-
-
         document.body.appendChild(
             link
         );
@@ -233,28 +413,24 @@ function saveContact() {
         link.remove();
 
 
-        setTimeout(
-            () => {
+        setTimeout(() => {
 
-                URL.revokeObjectURL(
-                    url
-                );
+            URL.revokeObjectURL(
+                url
+            );
 
-            },
-            1500
-        );
+        }, 1000);
 
 
         showToast(
-            "Contact ready to save"
+            "Contact card ready"
         );
 
-    }
 
-    catch (error) {
+    } catch (error) {
 
         console.error(
-            "Save Contact Error:",
+            "Save contact error:",
             error
         );
 
@@ -269,228 +445,10 @@ function saveContact() {
 
 
 /* =========================================
-   LOAD SHARE IMAGE
+   SAVE CONTACT BUTTON
 ========================================= */
 
-async function getShareImageFile() {
-
-    try {
-
-        const response =
-            await fetch(
-                SHARE_IMAGE,
-                {
-                    cache:
-                        "no-cache"
-                }
-            );
-
-
-        if (
-            !response.ok
-        ) {
-
-            return null;
-
-        }
-
-
-        const blob =
-            await response.blob();
-
-
-        return new File(
-
-            [blob],
-
-            "Goh-Chun-Sian.png",
-
-            {
-                type:
-                    blob.type ||
-                    "image/png"
-            }
-
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Share Image Error:",
-            error
-        );
-
-
-        return null;
-
-    }
-
-}
-
-
-/* =========================================
-   SHARE CARD
-========================================= */
-
-async function shareCard() {
-
-    const shareText =
-        "Goh Chun Sian — Sales Manager\nAik Huat Hardware";
-
-
-    const imageFile =
-        await getShareImageFile();
-
-
-    /* =====================================
-       SHARE IMAGE
-    ====================================== */
-
-    if (
-
-        imageFile &&
-
-        navigator.share &&
-
-        navigator.canShare &&
-
-        navigator.canShare({
-
-            files:
-                [imageFile]
-
-        })
-
-    ) {
-
-        try {
-
-            await navigator.share({
-
-                title:
-                    "Goh Chun Sian | Sales Manager",
-
-                text:
-                    `${shareText}\n${CARD_URL}`,
-
-                files:
-                    [imageFile]
-
-            });
-
-
-            return;
-
-        }
-
-        catch (error) {
-
-            if (
-                error.name ===
-                "AbortError"
-            ) {
-
-                return;
-
-            }
-
-            console.log(
-                "Image sharing failed:",
-                error
-            );
-
-        }
-
-    }
-
-
-    /* =====================================
-       NORMAL SHARE
-    ====================================== */
-
-    if (
-        navigator.share
-    ) {
-
-        try {
-
-            await navigator.share({
-
-                title:
-                    "Goh Chun Sian | Sales Manager",
-
-                text:
-                    shareText,
-
-                url:
-                    CARD_URL
-
-            });
-
-
-            return;
-
-        }
-
-        catch (error) {
-
-            if (
-                error.name ===
-                "AbortError"
-            ) {
-
-                return;
-
-            }
-
-        }
-
-    }
-
-
-    /* =====================================
-       COPY URL
-    ====================================== */
-
-    try {
-
-        await navigator.clipboard.writeText(
-            CARD_URL
-        );
-
-
-        showToast(
-            "Card link copied"
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Copy Error:",
-            error
-        );
-
-
-        showToast(
-            "Unable to share"
-        );
-
-    }
-
-}
-
-
-/* =========================================
-   SAVE CONTACT EVENT
-========================================= */
-
-if (
-    saveContactButton
-) {
+if (saveContactButton) {
 
     saveContactButton.addEventListener(
         "click",
@@ -501,12 +459,87 @@ if (
 
 
 /* =========================================
-   SHARE EVENT
+   SHARE CARD
 ========================================= */
 
-if (
-    shareButton
-) {
+async function shareCard() {
+
+    const shareData = {
+
+        title:
+            "Goh Chun Sian | Aik Huat Hardware",
+
+        text:
+            "Goh Chun Sian\n" +
+            "Sales Manager\n" +
+            "Aik Huat Hardware\n\n" +
+            "Digital Business Card",
+
+        url:
+            CARD_URL
+
+    };
+
+
+    if (
+        navigator.share
+    ) {
+
+        try {
+
+            await navigator.share(
+                shareData
+            );
+
+            return;
+
+        } catch (error) {
+
+            if (
+                error &&
+                error.name ===
+                    "AbortError"
+            ) {
+
+                return;
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================
+       FALLBACK
+    ====================================== */
+
+    try {
+
+        await navigator.clipboard.writeText(
+            CARD_URL
+        );
+
+        showToast(
+            "Card link copied"
+        );
+
+    } catch {
+
+        showToast(
+            CARD_URL
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   SHARE BUTTON
+========================================= */
+
+if (shareButton) {
 
     shareButton.addEventListener(
         "click",
@@ -531,23 +564,13 @@ if (
 
             navigator.serviceWorker
                 .register(
-                    "sw.js"
-                )
-                .then(
-                    registration => {
-
-                        console.log(
-                            "Service Worker registered:",
-                            registration.scope
-                        );
-
-                    }
+                    "./sw.js"
                 )
                 .catch(
                     error => {
 
                         console.log(
-                            "Service Worker error:",
+                            "Service worker registration failed:",
                             error
                         );
 
