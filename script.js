@@ -73,13 +73,19 @@ const toast =
 
 
 /* =========================================
-   TOAST
+   TOAST MESSAGE
 ========================================= */
 
 function showToast(message) {
 
+    if (!toast) {
+        return;
+    }
+
+
     toast.textContent =
         message;
+
 
     toast.classList.add(
         "show"
@@ -119,24 +125,64 @@ function createVCard() {
         "VERSION:3.0",
 
         /*
-         * IMPORTANT:
-         * Use FN only.
+         * IMPORTANT
          *
-         * This prevents the name from being
-         * split into First Name / Last Name.
+         * Keep the complete name together.
+         *
+         * N format:
+         *
+         * Family Name;
+         * Given Name;
+         * Additional Name;
+         * Prefix;
+         * Suffix
+         *
+         * We intentionally put the complete
+         * name in the Family Name field so
+         * iPhone does not rearrange it.
          */
 
-        `FN:${contact.name}`,
+        "N:Goh Chun Sian;;;;",
 
-        `ORG:${contact.company}`,
+        /*
+         * FN controls the displayed name.
+         */
 
-        `TITLE:${contact.title}`,
+        "FN:Goh Chun Sian",
 
-        `TEL;TYPE=CELL,VOICE:${contact.phone}`,
+        /*
+         * Company
+         */
 
-        `EMAIL;TYPE=INTERNET:${contact.email}`,
+        "ORG:Aik Huat Hardware",
 
-        `URL:${contact.website}`,
+        /*
+         * Job Title
+         */
+
+        "TITLE:Sales Manager",
+
+        /*
+         * Mobile
+         */
+
+        "TEL;TYPE=CELL,VOICE:+60102907356",
+
+        /*
+         * Email
+         */
+
+        "EMAIL;TYPE=INTERNET:gcs@aikhuathardware.com",
+
+        /*
+         * Website
+         */
+
+        "URL:https://aikhuathardware.com/",
+
+        /*
+         * End VCard
+         */
 
         "END:VCARD"
 
@@ -151,66 +197,84 @@ function createVCard() {
 
 function saveContact() {
 
-    const vcard =
-        createVCard();
+    try {
+
+        const vcard =
+            createVCard();
 
 
-    const blob =
-        new Blob(
-            [vcard],
-            {
-                type:
-                    "text/vcard;charset=utf-8"
-            }
-        );
-
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-
-    const link =
-        document.createElement(
-            "a"
-        );
-
-
-    link.href =
-        url;
-
-
-    link.download =
-        "Goh-Chun-Sian.vcf";
-
-
-    document.body.appendChild(
-        link
-    );
-
-
-    link.click();
-
-
-    link.remove();
-
-
-    setTimeout(
-        () => {
-
-            URL.revokeObjectURL(
-                url
+        const blob =
+            new Blob(
+                [vcard],
+                {
+                    type:
+                        "text/vcard;charset=utf-8"
+                }
             );
 
-        },
-        1000
-    );
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
 
 
-    showToast(
-        "Contact ready to save"
-    );
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        link.href =
+            url;
+
+
+        link.download =
+            "Goh-Chun-Sian.vcf";
+
+
+        document.body.appendChild(
+            link
+        );
+
+
+        link.click();
+
+
+        link.remove();
+
+
+        setTimeout(
+            () => {
+
+                URL.revokeObjectURL(
+                    url
+                );
+
+            },
+            1000
+        );
+
+
+        showToast(
+            "Contact ready to save"
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Save contact error:",
+            error
+        );
+
+
+        showToast(
+            "Unable to create contact"
+        );
+
+    }
 
 }
 
@@ -247,13 +311,17 @@ async function getShareImageFile() {
 
 
         return new File(
+
             [blob],
+
             "Goh-Chun-Sian.png",
+
             {
                 type:
                     blob.type ||
                     "image/png"
             }
+
         );
 
     }
@@ -265,6 +333,7 @@ async function getShareImageFile() {
             error
         );
 
+
         return null;
 
     }
@@ -273,31 +342,45 @@ async function getShareImageFile() {
 
 
 /* =========================================
-   SHARE DIGITAL CARD + IMAGE
+   SHARE DIGITAL CARD
 ========================================= */
 
 async function shareCard() {
 
+
+    /*
+     * Share text
+     */
+
     const shareText =
         "Goh Chun Sian — Sales Manager\nAik Huat Hardware";
 
+
+    /*
+     * Load contact picture
+     */
 
     const imageFile =
         await getShareImageFile();
 
 
     /* =====================================
-       SHARE WITH IMAGE
+       SHARE IMAGE + URL
     ====================================== */
 
     if (
+
         imageFile &&
+
         navigator.share &&
+
         navigator.canShare &&
+
         navigator.canShare({
             files:
                 [imageFile]
         })
+
     ) {
 
         try {
@@ -322,6 +405,10 @@ async function shareCard() {
 
         catch (error) {
 
+            /*
+             * User pressed Cancel
+             */
+
             if (
                 error.name ===
                 "AbortError"
@@ -331,13 +418,18 @@ async function shareCard() {
 
             }
 
+            console.error(
+                "Image share error:",
+                error
+            );
+
         }
 
     }
 
 
     /* =====================================
-       NORMAL SHARE FALLBACK
+       NORMAL WEB SHARE
     ====================================== */
 
     if (
@@ -381,7 +473,7 @@ async function shareCard() {
 
 
     /* =====================================
-       COPY LINK FALLBACK
+       COPY URL FALLBACK
     ====================================== */
 
     try {
@@ -397,7 +489,13 @@ async function shareCard() {
 
     }
 
-    catch {
+    catch (error) {
+
+        console.error(
+            "Copy error:",
+            error
+        );
+
 
         showToast(
             "Unable to share"
@@ -409,19 +507,35 @@ async function shareCard() {
 
 
 /* =========================================
-   BUTTON EVENTS
+   SAVE CONTACT BUTTON
 ========================================= */
 
-saveContactButton.addEventListener(
-    "click",
-    saveContact
-);
+if (
+    saveContactButton
+) {
+
+    saveContactButton.addEventListener(
+        "click",
+        saveContact
+    );
+
+}
 
 
-shareButton.addEventListener(
-    "click",
-    shareCard
-);
+/* =========================================
+   SHARE BUTTON
+========================================= */
+
+if (
+    shareButton
+) {
+
+    shareButton.addEventListener(
+        "click",
+        shareCard
+    );
+
+}
 
 
 /* =========================================
@@ -441,11 +555,21 @@ if (
                 .register(
                     "sw.js"
                 )
+                .then(
+                    registration => {
+
+                        console.log(
+                            "Service Worker registered:",
+                            registration.scope
+                        );
+
+                    }
+                )
                 .catch(
                     error => {
 
                         console.log(
-                            "Service Worker:",
+                            "Service Worker registration failed:",
                             error
                         );
 
